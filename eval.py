@@ -187,7 +187,8 @@ def eval_gif(model=None):
 def loss_plot(file_base):
     import pandas as pd
     df = pd.read_csv("./results/"+file_base+".csv")
-
+    print("Final train loss=", df["train_loss"].to_numpy()[-1])
+    print("Final Val loss=", df["val_loss"].to_numpy()[-1])
     plt.figure()
     plt.plot(df["train_loss"], label="Train Loss")
     plt.plot(df["val_loss"], '--', label="Val. Loss")
@@ -198,11 +199,22 @@ def loss_plot(file_base):
     plt.show()
 
 
+def calc_component_metrics(mdl, file="./data/data_val.csv"):
+    from contact_net import load_data
+    from torch.nn import MSELoss
+    x_val, y_val = load_data(file)
+    y_est = mdl(x_val)
+    loss = torch.mean(y_val - y_est, axis=0)
+    loss = loss.detach().numpy()
+    print("Final loss [X1,X2,Y1,Y2,TH]=", loss)
+
+
 
 if __name__ == "__main__":
-    use_clip = True
-    use_small = True
+    use_clip = False
+    use_small = False
     file_base = "contact_net_v1"
+    val_file = './data/data_val.csv'
 
     if use_clip:
         file_base+="_clipped"
@@ -211,6 +223,7 @@ if __name__ == "__main__":
 
     if use_small:
         file_base+="_small"
+        val_file = "./data/data_val_small.csv"
 
     if use_clip:
         mdl = ContactNet(peg_width=0.75, peg_height=1.5)
@@ -219,6 +232,7 @@ if __name__ == "__main__":
         mdl = ContactNet()
         mdl.load_state_dict(torch.load("./models/"+file_base+".pt"))
     mdl.eval()
+    calc_component_metrics(mdl, val_file)
     #eval_plots(mdl)
     #eval_gif(mdl)
     loss_plot(file_base)

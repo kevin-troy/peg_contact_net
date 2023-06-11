@@ -4,8 +4,8 @@ from sensor import gen_sensor_reading
 
 if __name__ == "__main__":
 
-    n_scenarios = 100
-    n_meas_per_scenario = 10
+    n_scenarios = 250
+    n_meas_per_scenario = 50
     res = 10000
     theta_bounds = [-np.pi/4, np.pi/4]
 
@@ -42,4 +42,4 @@ if __name__ == "__main__":
     x_data = np.vstack(x_data) # rows = scenario number, cols = Fx, Fy, Mz
     y_data = np.vstack(y_data) # rows = scenario number, cols = x1, y1, x2, y2
     data = np.hstack([x_data, y_data, np.vstack(thetas)])
-    np.savetxt("data_val_small.csv", data, delimiter=",")
+    np.savetxt("./data/data_val.csv", data, delimiter=",")
