@@ -155,9 +155,9 @@ if __name__ == "__main__":
     for i in range(3):
         plt.plot(wrenches[:,i], '-o', label=labels[i])
     plt.grid()
-    plt.xlabel("Theta (rad)")
+    plt.xlabel("Sample No.")
     plt.ylabel("Sensor Reading")
-
+    plt.legend()
     plt.figure()
 
     force_applied = np.linalg.norm(wrenches[:,:2], axis=1)
