@@ -179,10 +179,13 @@ def eval_gif(model=None):
         ax.set_xlabel("Peg X")
         ax.set_ylabel("Peg Y")
         ax.set_title("Contacts in Peg Frame")
-
-        fig.tight_layout()
+        plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+        #fig.tight_layout()
     ani = FuncAnimation(fig, animate, frames=n_frames, interval=0.01, repeat=True)
-    plt.show()
+    from matplotlib.animation import PillowWriter
+    writer = PillowWriter(fps=60)
+    ani.save('./results/eval_scenarios.gif', writer=writer)
+    #plt.show()
 
 def loss_plot(file_base):
     import pandas as pd
@@ -196,6 +199,7 @@ def loss_plot(file_base):
     plt.ylabel("MSE Loss")
     plt.grid()
     plt.title("Training Losses for model="+file_base)
+    plt.legend()
     plt.show()
 
 
@@ -211,7 +215,7 @@ def calc_component_metrics(mdl, file="./data/data_val.csv"):
 
 
 if __name__ == "__main__":
-    use_clip = False
+    use_clip = True
     use_small = False
     file_base = "contact_net_v1"
     val_file = './data/data_val.csv'
@@ -233,6 +237,7 @@ if __name__ == "__main__":
         mdl.load_state_dict(torch.load("./models/"+file_base+".pt"))
     mdl.eval()
     calc_component_metrics(mdl, val_file)
+
     #eval_plots(mdl)
-    #eval_gif(mdl)
+    eval_gif(mdl)
     loss_plot(file_base)
